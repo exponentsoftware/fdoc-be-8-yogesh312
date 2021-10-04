@@ -93,8 +93,17 @@ exports.deleteList = async (req, res) => {
 exports.updateList = async (req, res) => {
     try{
         const id = req.params.id;
-        const updated= await List.findByIdAndUpdate(id, req.body, {new: true})
-        res.json({ message: updated });
+        const userId = req.payload.id;
+        const user = User.findById(userId)
+        const list = List.findById(id)
+        if(user.id==list.userId){
+            const updated= await List.findByIdAndUpdate(id, req.body, {new: true})
+            res.json({ message: updated });
+        }else{
+            res.json("list doesnt belong to you to update")
+        }
+    
+        
     } catch(err){
         console.log(err)
     }
